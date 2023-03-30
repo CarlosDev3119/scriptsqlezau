@@ -85,34 +85,74 @@ SELECT COUNT(*) FROM `clientes` WHERE 1;
 
 
 delimiter // 
-CREATE PROCEDURE pa_cantidad_clientes_provincias( in provincia1 varchar(20), in provincia2 varchar(20)) 
+CREATE PROCEDURE pa_cantidad_clientes_provincias( in provincia1 varchar(20), in provincia2 varchar(20) ) 
 BEGIN 
 
     DECLARE canti1 INT; 
     DECLARE canti2 int; 
 
     SELECT count(*) INTO canti1 FROM clientes AS cli 
-
     JOIN provincias AS pro  
-
     ON pro.codigo=cli.codigoprovincia
-
     where pro.nombre=provincia1;
 
-
-    select count(*) into canti2 from clientes as cli 
-
-    join provincias as pro  
-
+    SELECT count(*) INTO canti2 FROM clientes AS cli 
+    JOIN provincias AS pro  
     on pro.codigo=cli.codigoprovincia 
-
     where pro.nombre=provincia2;      
 
-
-    select canti1,canti2;   
+    SELECT canti1,canti2;   
 
 END // 
 delimiter ; 
 
+-- base de datos nueva opcional
+CREATE DATABASE regiones;
 
+USE regiones;
+
+-- crear una tabla para localidades y otra para codigos postales
+
+CREATE TABLE IF NOT EXISTS localidades(
+    id_localidad INT PRIMARY KEY AUTO_INCREMENT,
+    nombre_localidad VARCHAR(255) NOT NULL,
+    id_codigo_postal INT NOT NULL,
+    FOREIGN KEY (id_codigo_postal) REFERENCES codigos_postales(id_cp)
+)ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS codigos_postales(
+    id_cp INT PRIMARY KEY AUTO_INCREMENT,
+    cp VARCHAR(10) NOT NULL
+)ENGINE=INNODB;
+
+
+--- id_localidad, nombre_localidad, id_codigo_postal  ------    id_cp, codigo_postal
+
+    1              Cuatro Vientos        1                        1       56589
+    2              San BuenaVentura      1                        2       56530
+
+
+-- hacer una consulta que me traiga la localidad y el codigo postal con un join
+
+
+-- 1 cuatro vientos 1
+-- 2 san buena      1
+-- 3 San marcos     2
+
+
+-- 1 56589
+-- 2 56530
+-- 3 56423
+
+INSERT INTO localidades(nombre_localidad,id_codigo_postal) VALUES ('CUATRO VIENTOS', 1);
+INSERT INTO localidades(nombre_localidad,id_codigo_postal) 
+VALUES 
+    ('SAN BUENA', 1),
+    ('SAN FRANCISCO', 2),
+    ('SAN JERONIMO', 1);
+
+INSERT INTO codigos_postales(cp) 
+VALUES 
+    ('56589'),
+    ('56588')
 
